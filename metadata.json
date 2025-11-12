@@ -1,0 +1,5 @@
+{
+  "name": "Video SEO Optimizer",
+  "description": "An AI-powered application that uses a swarm of Gemini agents to analyze videos, generating professional reports to optimize for CTR, SEO, and retention, complete with features like script rewriting and thumbnail generation.",
+  "requestFramePermissions": []
+}
