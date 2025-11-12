@@ -1,4 +1,3 @@
-
 export enum AppState {
   INPUT,
   LOADING,
@@ -7,9 +6,10 @@ export enum AppState {
 }
 
 export enum AgentName {
-    VIDEO_ANALYZER = 'Video Structure Analyzer',
-    TRANSCRIPT_ANALYZER = 'Transcript & Content Analyst',
+    CONTEXT_GATHERER = 'Context Gatherer',
+    SCRIPT_WRITER = 'AI Script Writer',
     SEO_AGENT = 'SEO & Metadata Agent',
+    THUMBNAIL_ARTIST = 'AI Thumbnail Artist',
     REPORT_WRITER = 'Final Report Synthesizer',
 }
 
@@ -28,12 +28,8 @@ export interface AgentState {
 }
 
 export interface AnalysisReport {
-    pros: string[];
-    cons: {
-        text: string;
-        severity: 'Low' | 'Medium' | 'High';
-    }[];
-    optimizations: {
+    strengths: string[];
+    recommendations: {
         title: string;
         description: string;
     }[];
@@ -46,15 +42,17 @@ export interface SeoCopy {
     hashtags: string[];
 }
 
-export interface GeneratedThumbnail {
-    prompt: string;
-    imageUrl: string;
-}
-
-export interface RewrittenScript {
+export interface GeneratedScript {
     title: string;
     sections: {
         heading: string;
         content: string;
     }[];
+}
+
+export interface VideoPlan {
+    report: AnalysisReport;
+    seoCopy: SeoCopy;
+    script: GeneratedScript;
+    thumbnails: string[];
 }
