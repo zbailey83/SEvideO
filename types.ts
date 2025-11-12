@@ -27,12 +27,14 @@ export interface AgentState {
     result?: string;
 }
 
+export interface ReportPoint {
+    title: string;
+    description: string;
+}
+
 export interface AnalysisReport {
-    strengths: string[];
-    recommendations: {
-        title: string;
-        description: string;
-    }[];
+    strengths: ReportPoint[];
+    recommendations: ReportPoint[];
 }
 
 export interface SeoCopy {

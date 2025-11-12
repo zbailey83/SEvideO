@@ -82,25 +82,25 @@ const App: React.FC = () => {
             case AppState.ERROR:
                 return (
                     <div className="w-full max-w-2xl mx-auto">
-                        <div className="bg-gray-800 rounded-xl p-8 shadow-2xl border border-gray-700">
+                        <div className="bg-white rounded-2xl p-8 shadow-2xl border border-slate-200/80">
                              {error && (
-                                <div className="bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg mb-6 flex items-center">
+                                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center">
                                     <XCircleIcon className="h-5 w-5 mr-3" />
-                                    <span>{error}</span>
+                                    <span className="font-medium text-sm">{error}</span>
                                 </div>
                             )}
                             <div className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">What's your video about?</label>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">What's your video about?</label>
                                     <div className="flex rounded-md shadow-sm">
                                         <button 
                                             onClick={() => setInputType('topic')} 
-                                            className={`px-4 py-2 border border-gray-600 rounded-l-md text-sm font-medium transition ${inputType === 'topic' ? 'bg-indigo-600 text-white' : 'bg-gray-700 hover:bg-gray-600'}`}>
+                                            className={`px-4 py-2 border border-slate-300 rounded-l-md text-sm font-semibold transition-all duration-200 ${inputType === 'topic' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 hover:bg-slate-100 text-slate-600'}`}>
                                             Topic
                                         </button>
                                         <button 
                                             onClick={() => setInputType('url')} 
-                                            className={`px-4 py-2 border border-l-0 border-gray-600 rounded-r-md text-sm font-medium transition ${inputType === 'url' ? 'bg-indigo-600 text-white' : 'bg-gray-700 hover:bg-gray-600'}`}>
+                                            className={`px-4 py-2 border border-l-0 border-slate-300 rounded-r-md text-sm font-semibold transition-all duration-200 ${inputType === 'url' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 hover:bg-slate-100 text-slate-600'}`}>
                                             Similar URL
                                         </button>
                                     </div>
@@ -109,13 +109,13 @@ const App: React.FC = () => {
                                       value={inputValue}
                                       onChange={e => setInputValue(e.target.value)}
                                       placeholder={inputType === 'topic' ? "e.g., 'How to Bake Sourdough Bread'" : "https://www.youtube.com/watch?v=..."}
-                                      className="mt-2 w-full bg-gray-900 border border-gray-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
+                                      className="mt-2 w-full bg-white border border-slate-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition shadow-sm" />
                                 </div>
                                 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label htmlFor="tone" className="block text-sm font-medium text-gray-300 mb-1">Desired Tone</label>
-                                        <select id="tone" value={tone} onChange={e => setTone(e.target.value)} className="w-full bg-gray-900 border border-gray-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                                        <label htmlFor="tone" className="block text-sm font-semibold text-slate-700 mb-1">Desired Tone</label>
+                                        <select id="tone" value={tone} onChange={e => setTone(e.target.value)} className="w-full bg-white border border-slate-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition shadow-sm">
                                             <option>Educational</option>
                                             <option>Entertaining</option>
                                             <option>Inspirational</option>
@@ -124,13 +124,13 @@ const App: React.FC = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label htmlFor="audience" className="block text-sm font-medium text-gray-300 mb-1">Target Audience</label>
-                                        <input type="text" id="audience" value={targetAudience} onChange={e => setTargetAudience(e.target.value)} placeholder="e.g., 'Beginner bakers'" className="w-full bg-gray-900 border border-gray-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
+                                        <label htmlFor="audience" className="block text-sm font-semibold text-slate-700 mb-1">Target Audience</label>
+                                        <input type="text" id="audience" value={targetAudience} onChange={e => setTargetAudience(e.target.value)} placeholder="e.g., 'Beginner bakers'" className="w-full bg-white border border-slate-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition shadow-sm" />
                                     </div>
                                 </div>
                             </div>
                             <div className="mt-8">
-                                <button onClick={handleAnalyze} disabled={!inputValue || !targetAudience} className="w-full flex justify-center items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-500 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out shadow-lg">
+                                <button onClick={handleAnalyze} disabled={!inputValue || !targetAudience} className="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 disabled:from-slate-300 disabled:to-slate-300 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 ease-in-out shadow-md hover:shadow-lg hover:-translate-y-0.5">
                                     <SparklesIcon className="w-5 h-5" />
                                     <span>Generate Video Plan</span>
                                 </button>
@@ -141,22 +141,22 @@ const App: React.FC = () => {
             case AppState.LOADING:
                 return (
                     <div className="w-full max-w-2xl mx-auto">
-                        <div className="bg-gray-800 rounded-xl p-8 shadow-2xl border border-gray-700">
-                            <h2 className="text-2xl font-bold text-center mb-2">AI Agent Swarm is Working...</h2>
-                            <p className="text-center text-gray-400 mb-8">Your video plan is being generated by our team of specialized AI agents.</p>
+                        <div className="bg-white rounded-2xl p-8 shadow-2xl border border-slate-200/80">
+                            <h2 className="text-2xl font-bold text-center mb-2 text-slate-900">AI Agent Swarm is Working...</h2>
+                            <p className="text-center text-slate-500 mb-8">Your video plan is being generated by our team of specialized AI agents.</p>
                             <div className="space-y-4">
                                 {agents.map(agent => (
-                                    <div key={agent.name} className="flex items-start p-4 bg-gray-900/50 rounded-lg">
+                                    <div key={agent.name} className="flex items-start p-4 bg-slate-50/70 rounded-lg border border-slate-200">
                                         <div className="mr-4 mt-1">
                                             {agent.status === AgentStatus.WORKING && <LoadingSpinner />}
-                                            {agent.status === AgentStatus.DONE && <CheckCircleIcon className="h-6 w-6 text-green-400" />}
-                                            {agent.status === AgentStatus.PENDING && <div className="h-6 w-6 rounded-full border-2 border-gray-500"></div>}
-                                            {agent.status === AgentStatus.ERROR && <XCircleIcon className="h-6 w-6 text-red-400" />}
+                                            {agent.status === AgentStatus.DONE && <CheckCircleIcon className="h-6 w-6 text-emerald-500" />}
+                                            {agent.status === AgentStatus.PENDING && <div className="h-6 w-6 rounded-full border-2 border-slate-400"></div>}
+                                            {agent.status === AgentStatus.ERROR && <XCircleIcon className="h-6 w-6 text-red-500" />}
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-white">{agent.name}</p>
-                                            <p className="text-sm text-gray-400">{agent.description}</p>
-                                            <p className="text-sm font-mono mt-1 text-indigo-400">{agent.status}</p>
+                                            <p className="font-semibold text-slate-800">{agent.name}</p>
+                                            <p className="text-sm text-slate-500">{agent.description}</p>
+                                            <p className="text-sm font-semibold mt-1 text-emerald-600">{agent.status}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -175,10 +175,10 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 text-gray-200 p-4 sm:p-6 lg:p-8">
+        <div className="min-h-screen p-4 sm:p-6 lg:p-8">
             <div className="text-center mb-10">
-                <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-600">Video SEO Optimizer</h1>
-                <p className="mt-2 text-lg text-gray-400 max-w-3xl mx-auto">Leverage a swarm of AI agents to generate a complete, optimized video plan from a single idea.</p>
+                <h1 className="text-5xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-600">VIDSEO</h1>
+                <p className="mt-3 text-lg text-slate-500 max-w-3xl mx-auto">Leverage a swarm of AI agents to generate a complete, optimized video plan from a single idea.</p>
             </div>
             <main>
                 {renderContent()}

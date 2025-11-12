@@ -120,10 +120,10 @@ const generateFinalReport = async (context: string, seoCopy: SeoCopy, script: Ge
     Generated Script Summary: The script is about ${script.title} and is broken into sections like ${script.sections.map(s => s.heading).join(', ')}.
 
     Based on this plan, create a report with:
-    1. "strengths": A list of 3-4 key strengths of this video plan (e.g., "Strong SEO focus in title", "Engaging hook in the script").
-    2. "recommendations": A list of 3-4 actionable recommendations for the creator during production (e.g., "Visuals: Use dynamic b-roll during the 'Main Content' section", "Pacing: Keep the intro fast-paced to match the hook's energy.").
+    1. "strengths": A list of 3-4 key strengths of this video plan. For each, provide a short "title" and a "description" explaining the strength.
+    2. "recommendations": A list of 3-4 actionable recommendations for production. For each, provide a "title" and a detailed "description" explaining the 'why' and 'how'.
 
-    Return the report as a JSON object.`;
+    Return the report as a single, valid JSON object with no markdown formatting.`;
 
     const response = await ai.models.generateContent({
         model: 'gemini-2.5-pro',
@@ -135,7 +135,14 @@ const generateFinalReport = async (context: string, seoCopy: SeoCopy, script: Ge
                 properties: {
                     strengths: {
                         type: Type.ARRAY,
-                        items: { type: Type.STRING }
+                        items: {
+                             type: Type.OBJECT,
+                             properties: {
+                                title: { type: Type.STRING },
+                                description: { type: Type.STRING }
+                             },
+                             required: ["title", "description"]
+                        }
                     },
                     recommendations: {
                         type: Type.ARRAY,
