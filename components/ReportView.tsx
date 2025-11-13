@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { VideoPlan, ReportPoint } from '../types';
-import { CheckCircleIcon, LightBulbIcon, TrendingUpIcon, ClipboardCopyIcon, SparklesIcon, ThumbUpIcon, ThumbDownIcon } from './icons';
+import { CheckCircleIcon, LightBulbIcon, TrendingUpIcon, ClipboardCopyIcon, SparklesIcon, ThumbUpIcon, ThumbDownIcon, ChevronDownIcon, ChevronUpIcon, DownloadIcon } from './icons';
 
 interface ReportViewProps {
     videoPlan: VideoPlan;
@@ -38,6 +39,9 @@ const ReportView: React.FC<ReportViewProps> = ({ videoPlan, onReset }) => {
     const [recommendations, setRecommendations] = useState<RatedRecommendation[]>(
         report.recommendations.map(r => ({ ...r, rating: undefined }))
     );
+    
+    const [collapsedSections, setCollapsedSections] = useState<Set<number>>(new Set());
+    const [selectedThumbnail, setSelectedThumbnail] = useState<number | null>(null);
 
     const handleRating = (index: number, rating: 'up' | 'down') => {
         setRecommendations(prev => prev.map((rec, i) => {
@@ -46,12 +50,76 @@ const ReportView: React.FC<ReportViewProps> = ({ videoPlan, onReset }) => {
             return { ...rec, rating: rec.rating === rating ? undefined : rating };
         }));
     };
+    
+    const toggleSection = (index: number) => {
+        setCollapsedSections(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(index)) {
+                newSet.delete(index);
+            } else {
+                newSet.add(index);
+            }
+            return newSet;
+        });
+    };
+    
+    const handleDownloadReport = () => {
+        const content = `
+VIDSEO: AI-GENERATED VIDEO PLAN
+================================
+
+## SEO & METADATA
+-----------------
+TITLE: ${seoCopy.title}
+
+DESCRIPTION:
+${seoCopy.description}
+
+TAGS: ${seoCopy.tags.join(', ')}
+
+HASHTAGS: ${seoCopy.hashtags.join(' ')}
+
+
+## ANALYSIS & RECOMMENDATIONS
+-----------------------------
+STRENGTHS:
+${report.strengths.map(s => `- ${s.title}: ${s.description}`).join('\n')}
+
+RECOMMENDATIONS:
+${report.recommendations.map(r => `- ${r.title}: ${r.description}`).join('\n')}
+
+
+## GENERATED SCRIPT
+-------------------
+SCRIPT TITLE: ${script.title}
+${script.sections.map(sec => `
+### ${sec.heading} ###
+${sec.content}
+`).join('\n\n')}
+        `;
+
+        const blob = new Blob([content.trim()], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'VIDSEO_Report.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
 
     return (
         <div className="w-full max-w-7xl mx-auto space-y-8 animate-fade-in">
             <div className="text-center">
                 <h2 className="text-3xl font-bold tracking-tight text-slate-900">Your AI-Generated Video Plan is Ready!</h2>
                 <p className="text-slate-500 mt-2">Here is the complete creative package for your next video.</p>
+                 <div className="mt-6">
+                    <button onClick={handleDownloadReport} className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-5 rounded-lg transition-all duration-300 ease-in-out shadow-md hover:shadow-lg hover:-translate-y-0.5">
+                        <DownloadIcon className="w-5 h-5" />
+                        <span>Download Full Report</span>
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
@@ -80,7 +148,29 @@ const ReportView: React.FC<ReportViewProps> = ({ videoPlan, onReset }) => {
                     <h3 className="text-xl font-bold mb-4 text-slate-800">Thumbnail Concepts</h3>
                     <div className="grid grid-cols-1 gap-4">
                         {thumbnails.map((src, index) => (
-                            <img key={index} src={src} alt={`Generated thumbnail ${index + 1}`} className="rounded-lg w-full object-cover aspect-video border border-slate-200" />
+                             <div key={index} className="relative group rounded-lg overflow-hidden shadow-md">
+                                <img 
+                                    src={src} 
+                                    alt={`Generated thumbnail ${index + 1}`} 
+                                    className={`w-full object-cover aspect-video transition-transform duration-300 ease-in-out ${selectedThumbnail === index ? '' : 'group-hover:scale-105'}`} 
+                                />
+                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
+                                    <button 
+                                        onClick={() => setSelectedThumbnail(index)}
+                                        className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 text-slate-800 font-bold py-2 px-4 rounded-full text-sm hover:bg-white transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white"
+                                    >
+                                        {selectedThumbnail === index ? 'Selected' : 'Use This Thumbnail'}
+                                    </button>
+                                </div>
+                                {selectedThumbnail === index && (
+                                    <>
+                                        <div className="absolute inset-0 ring-4 ring-emerald-500 ring-inset rounded-lg pointer-events-none"></div>
+                                        <div className="absolute top-2 right-2 bg-emerald-500 text-white rounded-full p-1 shadow-lg pointer-events-none">
+                                            <CheckCircleIcon className="w-5 h-5" />
+                                        </div>
+                                    </>
+                                )}
+                            </div>
                         ))}
                     </div>
                 </Card>
@@ -122,13 +212,32 @@ const ReportView: React.FC<ReportViewProps> = ({ videoPlan, onReset }) => {
              {/* Script Card */}
             <Card className="relative">
                 <h3 className="text-2xl font-bold mb-4 flex items-center text-slate-800"><SparklesIcon className="w-7 h-7 mr-3 text-emerald-500"/> Generated Script: <span className="ml-2 font-semibold text-slate-700">{script.title}</span></h3>
-                <div className="space-y-6 text-slate-600 whitespace-pre-wrap max-h-[70vh] overflow-y-auto pr-4 custom-scrollbar">
-                   {script.sections.map((section, index) => (
-                       <div key={index}>
-                           <h5 className="font-bold text-emerald-600 mb-2 text-lg tracking-wide">{section.heading}</h5>
-                           <p className="leading-relaxed">{section.content}</p>
-                       </div>
-                   ))}
+                <div className="space-y-4 text-slate-600 whitespace-pre-wrap max-h-[70vh] overflow-y-auto pr-4 custom-scrollbar">
+                   {script.sections.map((section, index) => {
+                       const isCollapsed = collapsedSections.has(index);
+                       return (
+                           <div key={index} className="border-b border-slate-200 last:border-b-0 pb-4">
+                               <button
+                                   onClick={() => toggleSection(index)}
+                                   className="w-full flex justify-between items-center text-left py-2 group"
+                                   aria-expanded={!isCollapsed}
+                                   aria-controls={`section-content-${index}`}
+                               >
+                                   <h5 className="font-bold text-emerald-600 text-lg tracking-wide group-hover:text-emerald-700 transition-colors">{section.heading}</h5>
+                                   {isCollapsed
+                                       ? <ChevronDownIcon className="w-6 h-6 text-slate-400 group-hover:text-slate-600 transition-transform transform" />
+                                       : <ChevronUpIcon className="w-6 h-6 text-slate-400 group-hover:text-slate-600 transition-transform transform" />
+                                   }
+                               </button>
+                               <div
+                                   id={`section-content-${index}`}
+                                   className={`overflow-hidden transition-all duration-300 ease-in-out ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-[1000px] opacity-100'}`}
+                               >
+                                   <p className="leading-relaxed pt-2">{section.content}</p>
+                               </div>
+                           </div>
+                       )
+                   })}
                </div>
                 <CopyButton textToCopy={
                     `${script.title}\n\n` +
