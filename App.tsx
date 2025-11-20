@@ -1,16 +1,17 @@
-import React, { useState, useCallback } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { AppState, AgentState, AgentName, AgentStatus, VideoPlan } from './types';
 import * as geminiService from './services/geminiService';
-import { SparklesIcon, XCircleIcon, CheckCircleIcon } from './components/icons';
+import { SparklesIcon, XCircleIcon, CheckCircleIcon, SunIcon, MoonIcon } from './components/icons';
 import LoadingSpinner from './components/LoadingSpinner';
 import ReportView from './components/ReportView';
 
 const INITIAL_AGENTS: AgentState[] = [
-    { name: AgentName.CONTEXT_GATHERER, status: AgentStatus.PENDING, description: "Researching topic or analyzing reference URL." },
-    { name: AgentName.SCRIPT_WRITER, status: AgentStatus.PENDING, description: "Crafting an engaging and structured video script." },
-    { name: AgentName.SEO_AGENT, status: AgentStatus.PENDING, description: "Generating optimized title, description, and tags." },
-    { name: AgentName.THUMBNAIL_ARTIST, status: AgentStatus.PENDING, description: "Designing two high-impact thumbnail concepts." },
-    { name: AgentName.REPORT_WRITER, status: AgentStatus.PENDING, description: "Compiling production recommendations." },
+    { name: AgentName.CONTEXT_GATHERER, status: AgentStatus.PENDING, description: "Initializing research protocols..." },
+    { name: AgentName.SCRIPT_WRITER, status: AgentStatus.PENDING, description: "Synthesizing narrative structure..." },
+    { name: AgentName.SEO_AGENT, status: AgentStatus.PENDING, description: "Optimizing metadata vectors..." },
+    { name: AgentName.THUMBNAIL_ARTIST, status: AgentStatus.PENDING, description: "Rendering visual concepts..." },
+    { name: AgentName.REPORT_WRITER, status: AgentStatus.PENDING, description: "Compiling final production artifacts..." },
 ];
 
 const App: React.FC = () => {
@@ -24,6 +25,21 @@ const App: React.FC = () => {
     const [agents, setAgents] = useState<AgentState[]>(INITIAL_AGENTS);
     const [videoPlan, setVideoPlan] = useState<VideoPlan | null>(null);
 
+    // Theme state
+    const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+
+    useEffect(() => {
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+    };
+
     const updateAgentStatus = (name: AgentName, status: AgentStatus, result?: string) => {
         setAgents(prev => prev.map(agent => 
             agent.name === name ? { ...agent, status, result } : agent
@@ -32,7 +48,7 @@ const App: React.FC = () => {
 
     const handleAnalyze = async () => {
         if (!inputValue || !targetAudience) {
-            setError("Please provide a topic/URL and a target audience.");
+            setError("Input parameters missing.");
             return;
         }
         setAppState(AppState.LOADING);
@@ -53,15 +69,14 @@ const App: React.FC = () => {
             );
             
             setVideoPlan(plan);
-            updateAgentStatus(AgentName.REPORT_WRITER, AgentStatus.DONE, "Report compiled.");
+            updateAgentStatus(AgentName.REPORT_WRITER, AgentStatus.DONE, "Artifacts compiled.");
             setAppState(AppState.REPORT);
 
         } catch (err) {
             console.error(err);
-            const errorMessage = err instanceof Error ? err.message : "An unknown error occurred.";
+            const errorMessage = err instanceof Error ? err.message : "Unknown system failure.";
             setError(`Analysis failed: ${errorMessage}`);
             setAppState(AppState.ERROR);
-            // Also mark the current working agent as error
              setAgents(prev => prev.map(agent => 
                 agent.status === AgentStatus.WORKING ? { ...agent, status: AgentStatus.ERROR } : agent
             ));
@@ -81,93 +96,159 @@ const App: React.FC = () => {
             case AppState.INPUT:
             case AppState.ERROR:
                 return (
-                    <div className="w-full max-w-2xl mx-auto">
-                        <div className="bg-white rounded-2xl p-8 shadow-2xl border border-slate-200/80">
-                             {error && (
-                                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center">
-                                    <XCircleIcon className="h-5 w-5 mr-3" />
-                                    <span className="font-medium text-sm">{error}</span>
-                                </div>
-                            )}
-                            <div className="space-y-6">
-                                <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-2">What's your video about?</label>
-                                    <div className="flex rounded-md shadow-sm">
-                                        <button 
-                                            onClick={() => setInputType('topic')} 
-                                            className={`px-4 py-2 border border-slate-300 rounded-l-md text-sm font-semibold transition-all duration-200 ${inputType === 'topic' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 hover:bg-slate-100 text-slate-600'}`}>
-                                            Topic
-                                        </button>
-                                        <button 
-                                            onClick={() => setInputType('url')} 
-                                            className={`px-4 py-2 border border-l-0 border-slate-300 rounded-r-md text-sm font-semibold transition-all duration-200 ${inputType === 'url' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 hover:bg-slate-100 text-slate-600'}`}>
-                                            Similar URL
-                                        </button>
+                    <div className="w-full max-w-xl mx-auto animate-in fade-in zoom-in-95 duration-500">
+                        {/* Technical Card */}
+                        <div className="bg-white/80 dark:bg-zinc-900/50 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl overflow-hidden relative transition-colors duration-300">
+                             {/* Top highlight line */}
+                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/50 to-transparent"></div>
+
+                            <div className="p-8">
+                                {error && (
+                                    <div className="bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 px-4 py-3 rounded mb-6 flex items-center text-sm font-mono">
+                                        <XCircleIcon className="h-4 w-4 mr-3 flex-shrink-0" />
+                                        <span>ERROR: {error}</span>
                                     </div>
-                                    <input 
-                                      type={inputType === 'url' ? 'url' : 'text'}
-                                      value={inputValue}
-                                      onChange={e => setInputValue(e.target.value)}
-                                      placeholder={inputType === 'topic' ? "e.g., 'How to Bake Sourdough Bread'" : "https://www.youtube.com/watch?v=..."}
-                                      className="mt-2 w-full bg-white border border-slate-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition shadow-sm" />
-                                </div>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                )}
+
+                                <div className="space-y-8">
+                                    {/* Input Type Selector */}
                                     <div>
-                                        <label htmlFor="tone" className="block text-sm font-semibold text-slate-700 mb-1">Desired Tone</label>
-                                        <select id="tone" value={tone} onChange={e => setTone(e.target.value)} className="w-full bg-white border border-slate-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition shadow-sm">
-                                            <option>Educational</option>
-                                            <option>Entertaining</option>
-                                            <option>Inspirational</option>
-                                            <option>Humorous</option>
-                                            <option>Professional</option>
-                                        </select>
+                                        <label className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-3">Input Source</label>
+                                        <div className="flex p-1 bg-zinc-100 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800/50 transition-colors duration-300">
+                                            <button 
+                                                onClick={() => setInputType('topic')} 
+                                                className={`flex-1 py-2 text-xs font-mono font-medium rounded-md transition-all duration-200 ${inputType === 'topic' ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200 dark:border-zinc-700' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}>
+                                                TOPIC
+                                            </button>
+                                            <button 
+                                                onClick={() => setInputType('url')} 
+                                                className={`flex-1 py-2 text-xs font-mono font-medium rounded-md transition-all duration-200 ${inputType === 'url' ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200 dark:border-zinc-700' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}>
+                                                REFERENCE URL
+                                            </button>
+                                        </div>
                                     </div>
+
+                                    {/* Main Input */}
                                     <div>
-                                        <label htmlFor="audience" className="block text-sm font-semibold text-slate-700 mb-1">Target Audience</label>
-                                        <input type="text" id="audience" value={targetAudience} onChange={e => setTargetAudience(e.target.value)} placeholder="e.g., 'Beginner bakers'" className="w-full bg-white border border-slate-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition shadow-sm" />
+                                         <label className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">
+                                            {inputType === 'topic' ? 'Video Topic' : 'Source URL'}
+                                         </label>
+                                         <div className="relative group">
+                                            <input 
+                                                type={inputType === 'url' ? 'url' : 'text'}
+                                                value={inputValue}
+                                                onChange={e => setInputValue(e.target.value)}
+                                                placeholder={inputType === 'topic' ? "e.g., Quantum Computing Basics" : "https://youtube.com/..."}
+                                                className="w-full bg-white dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-3 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-700 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all font-mono text-sm" 
+                                            />
+                                            <div className="absolute inset-0 rounded-lg ring-1 ring-zinc-900/5 dark:ring-white/5 pointer-events-none"></div>
+                                         </div>
                                     </div>
+                                    
+                                    {/* Config Grid */}
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div>
+                                            <label htmlFor="tone" className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">Tone Matrix</label>
+                                            <div className="relative">
+                                                <select 
+                                                    id="tone" 
+                                                    value={tone} 
+                                                    onChange={e => setTone(e.target.value)} 
+                                                    className="w-full bg-white dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-3 text-zinc-900 dark:text-zinc-300 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all appearance-none font-mono text-sm"
+                                                >
+                                                    <option>Educational</option>
+                                                    <option>Entertaining</option>
+                                                    <option>Inspirational</option>
+                                                    <option>Humorous</option>
+                                                    <option>Professional</option>
+                                                    <option>Analytical</option>
+                                                </select>
+                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                    <svg className="w-3 h-3 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label htmlFor="audience" className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">Target Segment</label>
+                                            <input 
+                                                type="text" 
+                                                id="audience" 
+                                                value={targetAudience} 
+                                                onChange={e => setTargetAudience(e.target.value)} 
+                                                placeholder="e.g. Tech Enthusiasts" 
+                                                className="w-full bg-white dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-3 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-700 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all font-mono text-sm" 
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mt-10">
+                                    <button 
+                                        onClick={handleAnalyze} 
+                                        disabled={!inputValue || !targetAudience} 
+                                        className="w-full group relative overflow-hidden flex justify-center items-center gap-3 bg-primary-600 hover:bg-primary-500 disabled:bg-zinc-200 dark:disabled:bg-zinc-800 disabled:text-zinc-400 dark:disabled:text-zinc-600 disabled:cursor-not-allowed text-white font-medium py-4 px-6 rounded-lg transition-all duration-200 shadow-[0_0_20px_-5px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_-5px_rgba(16,185,129,0.5)] border border-primary-400/20"
+                                    >
+                                        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                                        <SparklesIcon className="w-4 h-4 relative z-10" />
+                                        <span className="font-mono tracking-wide relative z-10">INITIATE SEQUENCE</span>
+                                    </button>
                                 </div>
                             </div>
-                            <div className="mt-8">
-                                <button onClick={handleAnalyze} disabled={!inputValue || !targetAudience} className="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 disabled:from-slate-300 disabled:to-slate-300 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 ease-in-out shadow-md hover:shadow-lg hover:-translate-y-0.5">
-                                    <SparklesIcon className="w-5 h-5" />
-                                    <span>Generate Video Plan</span>
-                                </button>
+                             {/* Decorative bottom code */}
+                             <div className="bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 p-3 flex justify-between items-center text-[10px] text-zinc-500 dark:text-zinc-600 font-mono transition-colors duration-300">
+                                <span>SYS.VER.2.5.0</span>
+                                <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-primary-500/50 animate-pulse"></span> ONLINE</span>
                             </div>
                         </div>
                     </div>
                 );
             case AppState.LOADING:
                 return (
-                    <div className="w-full max-w-2xl mx-auto">
-                        <div className="bg-white rounded-2xl p-8 shadow-2xl border border-slate-200/80">
-                            <h2 className="text-2xl font-bold text-center mb-2 text-slate-900">AI Agent Swarm is Working...</h2>
-                            <p className="text-center text-slate-500 mb-8">Your video plan is being generated by our team of specialized AI agents.</p>
-                            <div className="space-y-4">
-                                {agents.map(agent => (
-                                    <div key={agent.name} className="flex items-start p-4 bg-slate-50/70 rounded-lg border border-slate-200">
-                                        <div className="mr-4 mt-1">
-                                            {agent.status === AgentStatus.WORKING && <LoadingSpinner />}
-                                            {agent.status === AgentStatus.DONE && <CheckCircleIcon className="h-6 w-6 text-emerald-500" />}
-                                            {agent.status === AgentStatus.PENDING && <div className="h-6 w-6 rounded-full border-2 border-slate-400"></div>}
-                                            {agent.status === AgentStatus.ERROR && <XCircleIcon className="h-6 w-6 text-red-500" />}
+                    <div className="w-full max-w-xl mx-auto">
+                        <div className="bg-white/80 dark:bg-zinc-900/50 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-xl p-8 shadow-2xl transition-colors duration-300">
+                            <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-200 dark:border-zinc-800/50">
+                                <h2 className="text-lg font-mono font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">PROCESSING REQ-ID: {Math.floor(Math.random() * 10000)}</h2>
+                                <LoadingSpinner />
+                            </div>
+                            
+                            <div className="space-y-2 font-mono text-sm">
+                                {agents.map((agent, index) => (
+                                    <div key={agent.name} className={`group flex items-center p-3 rounded border transition-all duration-500 ${
+                                        agent.status === AgentStatus.WORKING 
+                                            ? 'bg-primary-50 dark:bg-primary-500/10 border-primary-200 dark:border-primary-500/30 text-primary-900 dark:text-primary-100' 
+                                            : agent.status === AgentStatus.DONE 
+                                                ? 'bg-zinc-50 dark:bg-zinc-950/30 border-zinc-200 dark:border-zinc-800/50 text-zinc-500 dark:text-zinc-400 opacity-70' 
+                                                : 'bg-transparent border-transparent text-zinc-500 dark:text-zinc-600'
+                                    }`}>
+                                        <div className="mr-4 w-6 flex justify-center">
+                                            {agent.status === AgentStatus.WORKING && <LoadingSpinner size="h-3 w-3" />}
+                                            {agent.status === AgentStatus.DONE && <CheckCircleIcon className="h-4 w-4 text-primary-600 dark:text-primary-500" />}
+                                            {agent.status === AgentStatus.PENDING && <div className="h-1.5 w-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full"></div>}
+                                            {agent.status === AgentStatus.ERROR && <XCircleIcon className="h-4 w-4 text-red-500" />}
                                         </div>
-                                        <div>
-                                            <p className="font-semibold text-slate-800">{agent.name}</p>
-                                            <p className="text-sm text-slate-500">{agent.description}</p>
-                                            <p className="text-sm font-semibold mt-1 text-emerald-600">{agent.status}</p>
+                                        <div className="flex-1 flex justify-between items-center">
+                                            <span className="text-xs font-bold tracking-wide uppercase">{agent.name}</span>
+                                            <span className={`text-[10px] uppercase tracking-widest ${
+                                                agent.status === AgentStatus.WORKING ? 'text-primary-600 dark:text-primary-400 animate-pulse' : 
+                                                agent.status === AgentStatus.DONE ? 'text-primary-600 dark:text-primary-500' : 'text-zinc-500 dark:text-zinc-600'
+                                            }`}>
+                                                {agent.status}
+                                            </span>
                                         </div>
                                     </div>
                                 ))}
+                            </div>
+                            
+                            <div className="mt-8 pt-4 border-t border-zinc-200 dark:border-zinc-800/50">
+                                <p className="text-center text-xs font-mono text-zinc-500 dark:text-zinc-600 animate-pulse">
+                                    &gt; GEMINI AGENT SWARM SYNCHRONIZED...
+                                </p>
                             </div>
                         </div>
                     </div>
                 );
             case AppState.REPORT:
                  if (!videoPlan) {
-                    setError("Failed to generate video plan.");
-                    setAppState(AppState.ERROR);
                     return null;
                 }
                 return <ReportView videoPlan={videoPlan} onReset={handleReset} />;
@@ -175,14 +256,39 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen p-4 sm:p-6 lg:p-8">
-            <div className="text-center mb-10">
-                <h1 className="text-5xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-600">VIDSEO</h1>
-                <p className="mt-3 text-lg text-slate-500 max-w-3xl mx-auto">Leverage a swarm of AI agents to generate a complete, optimized video plan from a single idea.</p>
+        <div className="min-h-screen w-full relative">
+             {/* Background Grid */}
+             <div className="fixed inset-0 bg-technical-grid dark:bg-technical-grid-dark bg-grid opacity-40 dark:opacity-20 pointer-events-none z-0 transition-colors duration-300"></div>
+             
+             {/* Main Layout */}
+            <div className="relative z-10 p-6 lg:p-12 flex flex-col items-center justify-start min-h-screen">
+                <header className="w-full max-w-[1400px] flex flex-col items-center relative mb-12 animate-in slide-in-from-top-10 duration-700 fade-in">
+                     {/* Theme Toggle */}
+                    <div className="absolute right-0 top-0">
+                        <button 
+                            onClick={toggleTheme}
+                            className="p-2 rounded-full bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 shadow-lg hover:scale-105 transition-all text-zinc-600 dark:text-zinc-400 hover:text-primary-600 dark:hover:text-primary-400"
+                            title="Toggle Theme"
+                        >
+                            {theme === 'light' ? <MoonIcon className="w-5 h-5" /> : <SunIcon className="w-5 h-5" />}
+                        </button>
+                    </div>
+
+                    <div className="inline-flex items-center justify-center mb-4 relative">
+                        <div className="absolute inset-0 bg-primary-500 blur-[40px] opacity-20 rounded-full"></div>
+                        <h1 className="text-5xl md:text-7xl font-mono font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-500 dark:from-zinc-100 dark:to-zinc-500 relative z-10">
+                            VIDSEO🎥 
+                        </h1>
+                    </div>
+                    <p className="text-zinc-500 font-mono text-xs md:text-sm tracking-[0.2em] uppercase">
+                        Content Production Agent Swarm
+                    </p>
+                </header>
+                
+                <main className="w-full">
+                    {renderContent()}
+                </main>
             </div>
-            <main>
-                {renderContent()}
-            </main>
         </div>
     );
 };
