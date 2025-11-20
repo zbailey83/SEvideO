@@ -125,24 +125,41 @@ ${sec.content}
         URL.revokeObjectURL(url);
     };
 
+    const handleDownloadImage = (dataUrl: string, index: number) => {
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = `vidseo_thumbnail_${index + 1}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+
     return (
         <div className="w-full max-w-[1400px] mx-auto space-y-6 animate-in fade-in duration-700">
             
             {/* Header Actions */}
-            <div className="flex flex-col md:flex-row justify-between items-end md:items-center gap-4 mb-8 border-b border-zinc-200 dark:border-zinc-800 pb-6 transition-colors duration-300">
+            <div className="flex flex-row justify-between items-center gap-4 mb-4 border-b border-zinc-200 dark:border-zinc-800 pb-4 transition-colors duration-300">
                 <div>
                     <h2 className="text-2xl font-mono font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">GENERATION COMPLETE</h2>
                     <p className="text-zinc-500 text-sm font-mono mt-1">Output ID: {Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
                 </div>
-                <div className="flex gap-3">
-                     <button onClick={onReset} className="px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-xs font-mono transition-colors">
-                        RESET
-                    </button>
-                    <button onClick={handleDownloadReport} className="flex items-center gap-2 bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white text-white dark:text-zinc-900 px-4 py-2 rounded-lg text-xs font-bold font-mono transition-all shadow-[0_0_15px_rgba(0,0,0,0.1)] dark:shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-                        <DownloadIcon className="w-4 h-4" />
-                        EXPORT_DATA
-                    </button>
-                </div>
+                <button onClick={onReset} className="px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-xs font-mono transition-colors">
+                    RESET
+                </button>
+            </div>
+
+            {/* Prominent Export Button */}
+            <div className="flex justify-center w-full mb-10">
+                <button 
+                    onClick={handleDownloadReport}
+                    className="relative inline-flex h-14 overflow-hidden rounded-full p-[2px] focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-zinc-50 dark:focus:ring-offset-zinc-900 group hover:scale-105 transition-transform duration-300"
+                >
+                    <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#EF4444_0%,#F59E0B_14%,#FCD34D_28%,#10B981_42%,#3B82F6_57%,#6366F1_71%,#8B5CF6_85%,#EF4444_100%)]" />
+                    <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-zinc-900 dark:bg-zinc-950 px-10 py-1 text-sm font-bold font-mono text-white backdrop-blur-3xl transition-all group-hover:bg-zinc-800 dark:group-hover:bg-zinc-900 gap-3 uppercase tracking-widest shadow-xl">
+                        <DownloadIcon className="w-5 h-5" />
+                        Export Strategic Data
+                    </span>
+                </button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -202,14 +219,28 @@ ${sec.content}
                                         alt={`Generated thumbnail ${index + 1}`} 
                                         className="w-full object-cover aspect-video opacity-90 group-hover:opacity-100 transition-opacity" 
                                     />
-                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-zinc-950 to-transparent p-3">
+                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-zinc-950 to-transparent p-3 pointer-events-none">
                                         <p className="text-[10px] font-mono text-zinc-400">VAR_0{index + 1}</p>
                                     </div>
-                                    {selectedThumbnail === index && (
-                                        <div className="absolute top-2 right-2 bg-primary-500 text-white rounded-full p-0.5">
-                                            <CheckCircleIcon className="w-4 h-4" />
-                                        </div>
-                                    )}
+                                    
+                                    <div className="absolute top-2 right-2 flex gap-2">
+                                        <button 
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleDownloadImage(src, index);
+                                            }}
+                                            className="p-1.5 rounded-md bg-black/60 hover:bg-black/80 text-white backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 border border-white/10"
+                                            title="Download Image"
+                                        >
+                                            <DownloadIcon className="w-4 h-4" />
+                                        </button>
+
+                                        {selectedThumbnail === index && (
+                                            <div className="bg-primary-500 text-white rounded-md p-1.5 shadow-lg">
+                                                <CheckCircleIcon className="w-4 h-4" />
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             ))}
                         </div>
