@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { VideoPlan, ReportPoint } from '../types';
 import { CheckCircleIcon, LightBulbIcon, TrendingUpIcon, ClipboardCopyIcon, SparklesIcon, ThumbUpIcon, ThumbDownIcon, ChevronDownIcon, ChevronUpIcon, DownloadIcon } from './icons';
@@ -152,7 +151,7 @@ ${sec.content}
             <div className="flex justify-center w-full mb-10">
                 <button 
                     onClick={handleDownloadReport}
-                    className="relative inline-flex h-14 overflow-hidden rounded-full p-[2px] focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-zinc-50 dark:focus:ring-offset-zinc-900 group hover:scale-105 transition-transform duration-300"
+                    className="relative inline-flex h-14 overflow-hidden rounded-full p-[2px] focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-zinc-50 dark:focus:ring-offset-zinc-900 group hover:scale-105 transition-transform duration-300 animate-float"
                 >
                     <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#EF4444_0%,#F59E0B_14%,#FCD34D_28%,#10B981_42%,#3B82F6_57%,#6366F1_71%,#8B5CF6_85%,#EF4444_100%)]" />
                     <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-zinc-900 dark:bg-zinc-950 px-10 py-1 text-sm font-bold font-mono text-white backdrop-blur-3xl transition-all group-hover:bg-zinc-800 dark:group-hover:bg-zinc-900 gap-3 uppercase tracking-widest shadow-xl">

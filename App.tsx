@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { AppState, AgentState, AgentName, AgentStatus, VideoPlan } from './types';
 import * as geminiService from './services/geminiService';
@@ -278,7 +277,7 @@ const App: React.FC = () => {
             <div className="relative z-10 p-6 lg:p-12 flex flex-col items-center justify-start min-h-screen">
                 <header className="w-full max-w-[1400px] flex flex-col items-center relative mb-16 animate-in slide-in-from-top-10 duration-700 fade-in">
                      {/* Theme Toggle */}
-                    <div className="absolute right-0 top-0">
+                    <div className="absolute right-0 top-0 z-20">
                         <button 
                             onClick={toggleTheme}
                             className="p-2 rounded-full bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 shadow-lg hover:scale-105 transition-all text-zinc-600 dark:text-zinc-400 hover:text-primary-600 dark:hover:text-primary-400"
@@ -290,7 +289,7 @@ const App: React.FC = () => {
 
                     <div className="inline-flex items-center justify-center mb-4 relative">
                         <div className="absolute inset-0 bg-primary-500 blur-[40px] opacity-20 rounded-full"></div>
-                        <h1 className="text-5xl md:text-7xl font-mono font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-500 dark:from-zinc-100 dark:to-zinc-500 relative z-10">
+                        <h1 className="text-5xl md:text-7xl font-mono font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-500 dark:from-zinc-100 dark:to-zinc-500 relative z-10 select-none">
                             VIDSEO🎥 
                         </h1>
                     </div>
@@ -298,28 +297,36 @@ const App: React.FC = () => {
                         Content Production Agent Swarm
                     </p>
 
-                    {/* Feature Bullet Points */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-                        <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm shadow-sm hover:border-primary-500/30 transition-colors">
-                            <SearchIcon className="w-3.5 h-3.5 text-primary-500" />
-                            <span className="text-[10px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide">Context Research</span>
+                    {/* Feature Bullet Points - Enhanced Style */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 w-full max-w-4xl">
+                        <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-900 dark:to-black shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-primary-500/40 transition-all duration-300 group cursor-default">
+                            <div className="p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 group-hover:bg-primary-500/20 transition-colors">
+                                <SearchIcon className="w-4 h-4 text-primary-500" />
+                            </div>
+                            <span className="text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">Context Research</span>
                         </div>
-                        <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm shadow-sm hover:border-primary-500/30 transition-colors">
-                            <DocumentTextIcon className="w-3.5 h-3.5 text-primary-500" />
-                            <span className="text-[10px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide">Viral Scripting</span>
+                        <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-900 dark:to-black shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-primary-500/40 transition-all duration-300 group cursor-default">
+                            <div className="p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 group-hover:bg-primary-500/20 transition-colors">
+                                <DocumentTextIcon className="w-4 h-4 text-primary-500" />
+                            </div>
+                            <span className="text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">Viral Scripting</span>
                         </div>
-                         <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm shadow-sm hover:border-primary-500/30 transition-colors">
-                            <TrendingUpIcon className="w-3.5 h-3.5 text-primary-500" />
-                            <span className="text-[10px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide">SEO Optimization</span>
+                         <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-900 dark:to-black shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-primary-500/40 transition-all duration-300 group cursor-default">
+                            <div className="p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 group-hover:bg-primary-500/20 transition-colors">
+                                <TrendingUpIcon className="w-4 h-4 text-primary-500" />
+                            </div>
+                            <span className="text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">SEO Optimization</span>
                         </div>
-                         <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm shadow-sm hover:border-primary-500/30 transition-colors">
-                            <PhotographIcon className="w-3.5 h-3.5 text-primary-500" />
-                            <span className="text-[10px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide">Visual Assets</span>
+                         <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-900 dark:to-black shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-primary-500/40 transition-all duration-300 group cursor-default">
+                            <div className="p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 group-hover:bg-primary-500/20 transition-colors">
+                                <PhotographIcon className="w-4 h-4 text-primary-500" />
+                            </div>
+                            <span className="text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">Visual Assets</span>
                         </div>
                     </div>
                 </header>
                 
-                <main className="w-full">
+                <main className="w-full relative z-10">
                     {renderContent()}
                 </main>
             </div>

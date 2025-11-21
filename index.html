@@ -35,8 +35,22 @@
               mono: ['JetBrains Mono', 'monospace'],
             },
             backgroundImage: {
-              'technical-grid': 'radial-gradient(circle, #e4e4e7 1px, transparent 1px)',
-              'technical-grid-dark': 'radial-gradient(circle, #27272a 1px, transparent 1px)',
+              'technical-grid': "radial-gradient(circle, #e4e4e7 1px, transparent 1px)",
+              'technical-grid-dark': "radial-gradient(circle, #27272a 1px, transparent 1px)",
+            },
+            backgroundSize: {
+              'grid': '24px 24px',
+            },
+            animation: {
+              'spin-slow': 'spin 3s linear infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              }
             }
           }
         }
@@ -45,56 +59,49 @@
     <style>
       body {
         font-family: 'Inter', sans-serif;
-        transition: background-color 0.3s ease, color 0.3s ease;
       }
       .bg-grid {
         background-size: 24px 24px;
+        mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
       }
-      /* Custom Scrollbar - Dark */
-      html.dark ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
       }
-      html.dark ::-webkit-scrollbar-track {
-        background: #18181b; 
+      ::-webkit-scrollbar-track {
+        background: transparent;
       }
-      html.dark ::-webkit-scrollbar-thumb {
-        background: #3f3f46; 
-        border-radius: 4px;
+      ::-webkit-scrollbar-thumb {
+        background: #a1a1aa;
+        border-radius: 3px;
       }
-      html.dark ::-webkit-scrollbar-thumb:hover {
-        background: #52525b; 
+      .dark ::-webkit-scrollbar-thumb {
+        background: #3f3f46;
       }
-
-      /* Custom Scrollbar - Light */
-      html:not(.dark) ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+      ::-webkit-scrollbar-thumb:hover {
+        background: #71717a;
       }
-      html:not(.dark) ::-webkit-scrollbar-track {
-        background: #f4f4f5; 
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background: #52525b;
       }
-      html:not(.dark) ::-webkit-scrollbar-thumb {
-        background: #d4d4d8; 
-        border-radius: 4px;
-      }
-      html:not(.dark) ::-webkit-scrollbar-thumb:hover {
-        background: #a1a1aa; 
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
       }
     </style>
   <script type="importmap">
 {
   "imports": {
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
     "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0"
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0"
   }
 }
 </script>
 </head>
-  <body class="bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 antialiased selection:bg-primary-500/30">
+  <body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-300 overflow-x-hidden selection:bg-primary-500/30">
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
   </body>
 </html>
