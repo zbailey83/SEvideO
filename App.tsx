@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { AppState, AgentState, AgentName, AgentStatus, VideoPlan } from './types';
 import * as geminiService from './services/geminiService';
-import { SparklesIcon, XCircleIcon, CheckCircleIcon, SunIcon, MoonIcon } from './components/icons';
+import { SparklesIcon, XCircleIcon, CheckCircleIcon, SunIcon, MoonIcon, SearchIcon, DocumentTextIcon, TrendingUpIcon, PhotographIcon } from './components/icons';
 import LoadingSpinner from './components/LoadingSpinner';
 import ReportView from './components/ReportView';
 
@@ -96,108 +96,122 @@ const App: React.FC = () => {
             case AppState.INPUT:
             case AppState.ERROR:
                 return (
-                    <div className="w-full max-w-xl mx-auto animate-in fade-in zoom-in-95 duration-500">
-                        {/* Technical Card */}
-                        <div className="bg-white/80 dark:bg-zinc-900/50 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl overflow-hidden relative transition-colors duration-300">
-                             {/* Top highlight line */}
-                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/50 to-transparent"></div>
+                    <div className="w-full max-w-xl mx-auto animate-in fade-in zoom-in-95 duration-500 relative group">
+                        {/* Technical Card with Glowing Rainbow Border */}
+                        
+                        {/* Default Rainbow Glow (Visible by default, fades out on hover) */}
+                        <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-red-500 via-purple-500 to-blue-500 opacity-20 blur transition-opacity duration-500 group-hover:opacity-0 animate-pulse"></div>
+                        
+                        {/* Green Hover Glow (Hidden by default, fades in on hover) */}
+                        <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-primary-500 via-emerald-400 to-primary-600 opacity-0 blur transition-opacity duration-500 group-hover:opacity-40 animate-pulse"></div>
+                        
+                        <div className="relative rounded-xl overflow-hidden p-[1px]">
+                             {/* Rainbow Spinner (Default) */}
+                             <div className="absolute inset-[-100%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#EF4444_0%,#F59E0B_14%,#FCD34D_28%,#10B981_42%,#3B82F6_57%,#6366F1_71%,#8B5CF6_85%,#EF4444_100%)] transition-opacity duration-500 group-hover:opacity-0" />
+                             
+                             {/* Green Spinner (Hover) */}
+                             <div className="absolute inset-[-100%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#34d399_50%,#059669_100%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                             
+                             <div className="bg-white dark:bg-zinc-950 backdrop-blur-xl rounded-xl shadow-2xl overflow-hidden relative transition-colors duration-300 h-full">
+                                 {/* Top highlight line */}
+                                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent z-10"></div>
 
-                            <div className="p-8">
-                                {error && (
-                                    <div className="bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 px-4 py-3 rounded mb-6 flex items-center text-sm font-mono">
-                                        <XCircleIcon className="h-4 w-4 mr-3 flex-shrink-0" />
-                                        <span>ERROR: {error}</span>
-                                    </div>
-                                )}
-
-                                <div className="space-y-8">
-                                    {/* Input Type Selector */}
-                                    <div>
-                                        <label className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-3">Input Source</label>
-                                        <div className="flex p-1 bg-zinc-100 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800/50 transition-colors duration-300">
-                                            <button 
-                                                onClick={() => setInputType('topic')} 
-                                                className={`flex-1 py-2 text-xs font-mono font-medium rounded-md transition-all duration-200 ${inputType === 'topic' ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200 dark:border-zinc-700' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}>
-                                                TOPIC
-                                            </button>
-                                            <button 
-                                                onClick={() => setInputType('url')} 
-                                                className={`flex-1 py-2 text-xs font-mono font-medium rounded-md transition-all duration-200 ${inputType === 'url' ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200 dark:border-zinc-700' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}>
-                                                REFERENCE URL
-                                            </button>
+                                <div className="p-8 relative z-10 bg-white/90 dark:bg-zinc-950/90">
+                                    {error && (
+                                        <div className="bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 px-4 py-3 rounded mb-6 flex items-center text-sm font-mono">
+                                            <XCircleIcon className="h-4 w-4 mr-3 flex-shrink-0" />
+                                            <span>ERROR: {error}</span>
                                         </div>
-                                    </div>
+                                    )}
 
-                                    {/* Main Input */}
-                                    <div>
-                                         <label className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">
-                                            {inputType === 'topic' ? 'Video Topic' : 'Source URL'}
-                                         </label>
-                                         <div className="relative group">
-                                            <input 
-                                                type={inputType === 'url' ? 'url' : 'text'}
-                                                value={inputValue}
-                                                onChange={e => setInputValue(e.target.value)}
-                                                placeholder={inputType === 'topic' ? "e.g., Quantum Computing Basics" : "https://youtube.com/..."}
-                                                className="w-full bg-white dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-3 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-700 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all font-mono text-sm" 
-                                            />
-                                            <div className="absolute inset-0 rounded-lg ring-1 ring-zinc-900/5 dark:ring-white/5 pointer-events-none"></div>
-                                         </div>
-                                    </div>
-                                    
-                                    {/* Config Grid */}
-                                    <div className="grid grid-cols-2 gap-6">
+                                    <div className="space-y-8">
+                                        {/* Input Type Selector */}
                                         <div>
-                                            <label htmlFor="tone" className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">Tone Matrix</label>
-                                            <div className="relative">
-                                                <select 
-                                                    id="tone" 
-                                                    value={tone} 
-                                                    onChange={e => setTone(e.target.value)} 
-                                                    className="w-full bg-white dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-3 text-zinc-900 dark:text-zinc-300 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all appearance-none font-mono text-sm"
-                                                >
-                                                    <option>Educational</option>
-                                                    <option>Entertaining</option>
-                                                    <option>Inspirational</option>
-                                                    <option>Humorous</option>
-                                                    <option>Professional</option>
-                                                    <option>Analytical</option>
-                                                </select>
-                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                                    <svg className="w-3 h-3 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                                </div>
+                                            <label className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-3">Input Source</label>
+                                            <div className="flex p-1 bg-zinc-100 dark:bg-zinc-900/50 rounded-lg border border-zinc-200 dark:border-zinc-800/50 transition-colors duration-300">
+                                                <button 
+                                                    onClick={() => setInputType('topic')} 
+                                                    className={`flex-1 py-2 text-xs font-mono font-medium rounded-md transition-all duration-200 ${inputType === 'topic' ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200 dark:border-zinc-700' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}>
+                                                    TOPIC
+                                                </button>
+                                                <button 
+                                                    onClick={() => setInputType('url')} 
+                                                    className={`flex-1 py-2 text-xs font-mono font-medium rounded-md transition-all duration-200 ${inputType === 'url' ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200 dark:border-zinc-700' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}>
+                                                    REFERENCE URL
+                                                </button>
                                             </div>
                                         </div>
+
+                                        {/* Main Input */}
                                         <div>
-                                            <label htmlFor="audience" className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">Target Segment</label>
-                                            <input 
-                                                type="text" 
-                                                id="audience" 
-                                                value={targetAudience} 
-                                                onChange={e => setTargetAudience(e.target.value)} 
-                                                placeholder="e.g. Tech Enthusiasts" 
-                                                className="w-full bg-white dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-3 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-700 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all font-mono text-sm" 
-                                            />
+                                             <label className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">
+                                                {inputType === 'topic' ? 'Video Topic' : 'Source URL'}
+                                             </label>
+                                             <div className="relative group/input">
+                                                <input 
+                                                    type={inputType === 'url' ? 'url' : 'text'}
+                                                    value={inputValue}
+                                                    onChange={e => setInputValue(e.target.value)}
+                                                    placeholder={inputType === 'topic' ? "e.g., Quantum Computing Basics" : "https://youtube.com/..."}
+                                                    className="w-full bg-zinc-50 dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-3 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-700 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all font-mono text-sm" 
+                                                />
+                                             </div>
+                                        </div>
+                                        
+                                        {/* Config Grid */}
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div>
+                                                <label htmlFor="tone" className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">Tone Matrix</label>
+                                                <div className="relative">
+                                                    <select 
+                                                        id="tone" 
+                                                        value={tone} 
+                                                        onChange={e => setTone(e.target.value)} 
+                                                        className="w-full bg-zinc-50 dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-3 text-zinc-900 dark:text-zinc-300 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all appearance-none font-mono text-sm"
+                                                    >
+                                                        <option>Educational</option>
+                                                        <option>Entertaining</option>
+                                                        <option>Inspirational</option>
+                                                        <option>Humorous</option>
+                                                        <option>Professional</option>
+                                                        <option>Analytical</option>
+                                                    </select>
+                                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                        <svg className="w-3 h-3 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label htmlFor="audience" className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">Target Segment</label>
+                                                <input 
+                                                    type="text" 
+                                                    id="audience" 
+                                                    value={targetAudience} 
+                                                    onChange={e => setTargetAudience(e.target.value)} 
+                                                    placeholder="e.g. Tech Enthusiasts" 
+                                                    className="w-full bg-zinc-50 dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-3 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-700 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all font-mono text-sm" 
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="mt-10">
-                                    <button 
-                                        onClick={handleAnalyze} 
-                                        disabled={!inputValue || !targetAudience} 
-                                        className="w-full group relative overflow-hidden flex justify-center items-center gap-3 bg-primary-600 hover:bg-primary-500 disabled:bg-zinc-200 dark:disabled:bg-zinc-800 disabled:text-zinc-400 dark:disabled:text-zinc-600 disabled:cursor-not-allowed text-white font-medium py-4 px-6 rounded-lg transition-all duration-200 shadow-[0_0_20px_-5px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_-5px_rgba(16,185,129,0.5)] border border-primary-400/20"
-                                    >
-                                        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-0 group-hover:opacity-20 transition-opacity"></div>
-                                        <SparklesIcon className="w-4 h-4 relative z-10" />
-                                        <span className="font-mono tracking-wide relative z-10">INITIATE SEQUENCE</span>
-                                    </button>
+                                    <div className="mt-10">
+                                        <button 
+                                            onClick={handleAnalyze} 
+                                            disabled={!inputValue || !targetAudience} 
+                                            className="w-full group/btn relative overflow-hidden flex justify-center items-center gap-3 bg-primary-600 hover:bg-primary-500 disabled:bg-zinc-200 dark:disabled:bg-zinc-800 disabled:text-zinc-400 dark:disabled:text-zinc-600 disabled:cursor-not-allowed text-white font-medium py-4 px-6 rounded-lg transition-all duration-200 shadow-[0_0_20px_-5px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_-5px_rgba(16,185,129,0.5)] border border-primary-400/20"
+                                        >
+                                            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-0 group-hover/btn:opacity-20 transition-opacity"></div>
+                                            <SparklesIcon className="w-4 h-4 relative z-10" />
+                                            <span className="font-mono tracking-wide relative z-10">INITIATE SEQUENCE</span>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                             {/* Decorative bottom code */}
-                             <div className="bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 p-3 flex justify-between items-center text-[10px] text-zinc-500 dark:text-zinc-600 font-mono transition-colors duration-300">
-                                <span>SYS.VER.2.5.0</span>
-                                <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-primary-500/50 animate-pulse"></span> ONLINE</span>
+                                 {/* Decorative bottom code */}
+                                 <div className="bg-zinc-50 dark:bg-zinc-950/90 border-t border-zinc-200 dark:border-zinc-800 p-3 flex justify-between items-center text-[10px] text-zinc-500 dark:text-zinc-600 font-mono transition-colors duration-300 relative z-10">
+                                    <span>SYS.VER.2.5.0</span>
+                                    <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-primary-500/50 animate-pulse"></span> ONLINE</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -262,7 +276,7 @@ const App: React.FC = () => {
              
              {/* Main Layout */}
             <div className="relative z-10 p-6 lg:p-12 flex flex-col items-center justify-start min-h-screen">
-                <header className="w-full max-w-[1400px] flex flex-col items-center relative mb-12 animate-in slide-in-from-top-10 duration-700 fade-in">
+                <header className="w-full max-w-[1400px] flex flex-col items-center relative mb-16 animate-in slide-in-from-top-10 duration-700 fade-in">
                      {/* Theme Toggle */}
                     <div className="absolute right-0 top-0">
                         <button 
@@ -280,9 +294,29 @@ const App: React.FC = () => {
                             VIDSEO🎥 
                         </h1>
                     </div>
-                    <p className="text-zinc-500 font-mono text-xs md:text-sm tracking-[0.2em] uppercase">
+                    <p className="text-zinc-500 font-mono text-xs md:text-sm tracking-[0.2em] uppercase mb-8 text-center max-w-lg mx-auto leading-relaxed">
                         Content Production Agent Swarm
                     </p>
+
+                    {/* Feature Bullet Points */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm shadow-sm hover:border-primary-500/30 transition-colors">
+                            <SearchIcon className="w-3.5 h-3.5 text-primary-500" />
+                            <span className="text-[10px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide">Context Research</span>
+                        </div>
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm shadow-sm hover:border-primary-500/30 transition-colors">
+                            <DocumentTextIcon className="w-3.5 h-3.5 text-primary-500" />
+                            <span className="text-[10px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide">Viral Scripting</span>
+                        </div>
+                         <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm shadow-sm hover:border-primary-500/30 transition-colors">
+                            <TrendingUpIcon className="w-3.5 h-3.5 text-primary-500" />
+                            <span className="text-[10px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide">SEO Optimization</span>
+                        </div>
+                         <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm shadow-sm hover:border-primary-500/30 transition-colors">
+                            <PhotographIcon className="w-3.5 h-3.5 text-primary-500" />
+                            <span className="text-[10px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide">Visual Assets</span>
+                        </div>
+                    </div>
                 </header>
                 
                 <main className="w-full">
