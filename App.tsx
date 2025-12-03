@@ -13,6 +13,28 @@ const INITIAL_AGENTS: AgentState[] = [
     { name: AgentName.REPORT_WRITER, status: AgentStatus.PENDING, description: "Compiling final production artifacts..." },
 ];
 
+const FeaturePill = ({ 
+    active, 
+    icon: Icon, 
+    label 
+}: { 
+    active: boolean; 
+    icon: any; 
+    label: string 
+}) => (
+    <div className="relative group cursor-default">
+        <div className={`absolute -inset-0.5 bg-gradient-to-r from-red-500 via-purple-500 to-blue-500 rounded-xl blur opacity-0 transition-opacity duration-500 ${active ? 'opacity-70 animate-pulse' : 'group-hover:opacity-30'}`}></div>
+        <div className="relative flex items-center gap-3 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-900 dark:to-black shadow-md transition-all duration-300 h-full bg-white dark:bg-zinc-950">
+            <div className={`p-2 rounded-full transition-colors ${active ? 'bg-primary-500/20' : 'bg-zinc-100 dark:bg-zinc-800 group-hover:bg-primary-500/20'}`}>
+                <Icon className={`w-4 h-4 transition-colors ${active ? 'text-primary-500' : 'text-primary-500'}`} />
+            </div>
+            <span className={`text-[11px] font-mono font-bold uppercase tracking-wider transition-colors ${active ? 'text-primary-600 dark:text-primary-400' : 'text-zinc-600 dark:text-zinc-400 group-hover:text-primary-600 dark:group-hover:text-primary-400'}`}>
+                {label}
+            </span>
+        </div>
+    </div>
+);
+
 const App: React.FC = () => {
     const [appState, setAppState] = useState<AppState>(AppState.INPUT);
     const [inputType, setInputType] = useState<'topic' | 'url'>('topic');
@@ -44,6 +66,8 @@ const App: React.FC = () => {
             agent.name === name ? { ...agent, status, result } : agent
         ));
     };
+
+    const isAgentWorking = (name: AgentName) => agents.find(a => a.name === name)?.status === AgentStatus.WORKING;
 
     const handleAnalyze = async () => {
         if (!inputValue || !targetAudience) {
@@ -226,21 +250,28 @@ const App: React.FC = () => {
                             
                             <div className="space-y-2 font-mono text-sm">
                                 {agents.map((agent, index) => (
-                                    <div key={agent.name} className={`group flex items-center p-3 rounded border transition-all duration-500 ${
-                                        agent.status === AgentStatus.WORKING 
-                                            ? 'bg-primary-50 dark:bg-primary-500/10 border-primary-200 dark:border-primary-500/30 text-primary-900 dark:text-primary-100' 
-                                            : agent.status === AgentStatus.DONE 
-                                                ? 'bg-zinc-50 dark:bg-zinc-950/30 border-zinc-200 dark:border-zinc-800/50 text-zinc-500 dark:text-zinc-400 opacity-70' 
-                                                : 'bg-transparent border-transparent text-zinc-500 dark:text-zinc-600'
+                                    <div key={agent.name} className={`relative overflow-hidden group flex items-center p-3 rounded border transition-all duration-500 ${
+                                        agent.status === AgentStatus.WORKING || agent.status === AgentStatus.DONE 
+                                            ? 'border-primary-200 dark:border-primary-900/50' 
+                                            : 'border-zinc-200 dark:border-zinc-800/50'
                                     }`}>
-                                        <div className="mr-4 w-6 flex justify-center">
+                                        {/* Progress Bar Background */}
+                                        <div 
+                                            className={`absolute inset-0 bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20 transition-transform origin-left z-0 ${
+                                                agent.status === AgentStatus.PENDING ? 'scale-x-0' :
+                                                agent.status === AgentStatus.WORKING ? 'scale-x-[0.8] duration-[8000ms] ease-out' : 
+                                                'scale-x-100 duration-500 ease-out'
+                                            }`} 
+                                        />
+
+                                        <div className="relative z-10 mr-4 w-6 flex justify-center">
                                             {agent.status === AgentStatus.WORKING && <LoadingSpinner size="h-3 w-3" />}
                                             {agent.status === AgentStatus.DONE && <CheckCircleIcon className="h-4 w-4 text-primary-600 dark:text-primary-500" />}
                                             {agent.status === AgentStatus.PENDING && <div className="h-1.5 w-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full"></div>}
                                             {agent.status === AgentStatus.ERROR && <XCircleIcon className="h-4 w-4 text-red-500" />}
                                         </div>
-                                        <div className="flex-1 flex justify-between items-center">
-                                            <span className="text-xs font-bold tracking-wide uppercase">{agent.name}</span>
+                                        <div className="relative z-10 flex-1 flex justify-between items-center">
+                                            <span className="text-xs font-bold tracking-wide uppercase text-zinc-700 dark:text-zinc-300">{agent.name}</span>
                                             <span className={`text-[10px] uppercase tracking-widest ${
                                                 agent.status === AgentStatus.WORKING ? 'text-primary-600 dark:text-primary-400 animate-pulse' : 
                                                 agent.status === AgentStatus.DONE ? 'text-primary-600 dark:text-primary-500' : 'text-zinc-500 dark:text-zinc-600'
@@ -297,32 +328,28 @@ const App: React.FC = () => {
                         Content Production Agent Swarm
                     </p>
 
-                    {/* Feature Bullet Points - Enhanced Style */}
+                    {/* Feature Bullet Points - Enhanced Style with Rainbow Glow */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 w-full max-w-4xl">
-                        <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-900 dark:to-black shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-primary-500/40 transition-all duration-300 group cursor-default">
-                            <div className="p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 group-hover:bg-primary-500/20 transition-colors">
-                                <SearchIcon className="w-4 h-4 text-primary-500" />
-                            </div>
-                            <span className="text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">Context Research</span>
-                        </div>
-                        <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-900 dark:to-black shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-primary-500/40 transition-all duration-300 group cursor-default">
-                            <div className="p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 group-hover:bg-primary-500/20 transition-colors">
-                                <DocumentTextIcon className="w-4 h-4 text-primary-500" />
-                            </div>
-                            <span className="text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">Viral Scripting</span>
-                        </div>
-                         <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-900 dark:to-black shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-primary-500/40 transition-all duration-300 group cursor-default">
-                            <div className="p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 group-hover:bg-primary-500/20 transition-colors">
-                                <TrendingUpIcon className="w-4 h-4 text-primary-500" />
-                            </div>
-                            <span className="text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">SEO Optimization</span>
-                        </div>
-                         <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-900 dark:to-black shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-primary-500/40 transition-all duration-300 group cursor-default">
-                            <div className="p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 group-hover:bg-primary-500/20 transition-colors">
-                                <PhotographIcon className="w-4 h-4 text-primary-500" />
-                            </div>
-                            <span className="text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">Visual Assets</span>
-                        </div>
+                        <FeaturePill 
+                            active={isAgentWorking(AgentName.CONTEXT_GATHERER)} 
+                            icon={SearchIcon} 
+                            label="Context Research" 
+                        />
+                        <FeaturePill 
+                            active={isAgentWorking(AgentName.SCRIPT_WRITER)} 
+                            icon={DocumentTextIcon} 
+                            label="Viral Scripting" 
+                        />
+                        <FeaturePill 
+                            active={isAgentWorking(AgentName.SEO_AGENT)} 
+                            icon={TrendingUpIcon} 
+                            label="SEO Optimization" 
+                        />
+                        <FeaturePill 
+                            active={isAgentWorking(AgentName.THUMBNAIL_ARTIST)} 
+                            icon={PhotographIcon} 
+                            label="Visual Assets" 
+                        />
                     </div>
                 </header>
                 
