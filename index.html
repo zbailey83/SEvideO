@@ -1,56 +1,38 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VIDSEO</title>
+    <title>VIDSEO - Quantum Insight Swarm</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
             colors: {
-              zinc: {
-                850: '#1f1f22',
-                950: '#09090b',
+              brand: {
+                gold: '#C5A059',
+                goldHover: '#B08C4A',
               },
-              primary: {
-                50: '#ecfdf5',
-                100: '#d1fae5',
-                200: '#a7f3d0',
-                300: '#6ee7b7',
-                400: '#34d399',
-                500: '#10b981',
-                600: '#059669',
-                700: '#047857',
-                800: '#065f46',
-                900: '#064e3b',
-                950: '#022c22',
+              cream: '#F9F8F4',
+              offWhite: '#F5F4F0',
+              stone: {
+                850: '#1C1917',
               }
             },
             fontFamily: {
+              serif: ['Playfair Display', 'serif'],
               sans: ['Inter', 'sans-serif'],
               mono: ['JetBrains Mono', 'monospace'],
             },
             backgroundImage: {
-              'technical-grid': "radial-gradient(circle, #e4e4e7 1px, transparent 1px)",
-              'technical-grid-dark': "radial-gradient(circle, #27272a 1px, transparent 1px)",
+              'academic-grid': "radial-gradient(circle, #D1D5DB 1px, transparent 1px)",
+              'academic-grid-dark': "radial-gradient(circle, #374151 1px, transparent 1px)",
             },
             backgroundSize: {
-              'grid': '24px 24px',
-            },
-            animation: {
-              'spin-slow': 'spin 3s linear infinite',
-              'float': 'float 6s ease-in-out infinite',
-              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            },
-            keyframes: {
-              float: {
-                '0%, 100%': { transform: 'translateY(0)' },
-                '50%': { transform: 'translateY(-10px)' },
-              }
+              'grid': '40px 40px',
             }
           }
         }
@@ -59,49 +41,45 @@
     <style>
       body {
         font-family: 'Inter', sans-serif;
+        background-color: #F9F8F4;
+      }
+      .font-serif {
+        font-family: 'Playfair Display', serif;
+      }
+      * {
+        transition: background-color 0.3s ease, border-color 0.3s ease;
       }
       .bg-grid {
-        background-size: 24px 24px;
-        mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-        -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        background-size: 40px 40px;
+        mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+        -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
       }
-      /* Custom Scrollbar */
       ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
+        width: 4px;
+        height: 4px;
       }
       ::-webkit-scrollbar-track {
         background: transparent;
       }
       ::-webkit-scrollbar-thumb {
-        background: #a1a1aa;
-        border-radius: 3px;
-      }
-      .dark ::-webkit-scrollbar-thumb {
-        background: #3f3f46;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #71717a;
-      }
-      .dark ::-webkit-scrollbar-thumb:hover {
-        background: #52525b;
-      }
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 4px;
+        background: #C5A059;
+        border-radius: 10px;
       }
     </style>
   <script type="importmap">
 {
   "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0"
+    "react": "https://esm.sh/react@19.0.0",
+    "react/": "https://esm.sh/react@19.0.0/",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/": "https://esm.sh/react-dom@19.0.0/",
+    "framer-motion": "https://esm.sh/framer-motion@11.11.11?external=react,react-dom",
+    "@google/genai": "https://esm.sh/@google/genai@1.30.0"
   }
 }
 </script>
 </head>
-  <body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-300 overflow-x-hidden selection:bg-primary-500/30">
+  <body class="bg-cream text-stone-850 dark:bg-stone-900 dark:text-offWhite selection:bg-brand-gold/20">
     <div id="root"></div>
   </body>
 </html>
